@@ -1,103 +1,402 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Giabinh</title>
-    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            overflow: hidden;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Sensi VIP — Free Fire Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg1:#08101a; --bg2:#0b1220;
+    --card:#071021aa;
+    --glass: rgba(255,255,255,0.04);
+    --text:#e6eef8;
+    --muted:#9fb0c8;
+    --neon-cyan: #00ffe1;
+    --neon-pink: #ff4fb1;
+    --accent-grad: linear-gradient(90deg,var(--neon-pink),var(--neon-cyan));
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;color:var(--text);background:linear-gradient(120deg,var(--bg1),var(--bg2));-webkit-font-smoothing:antialiased}
+  /* animated background */
+  body::before{
+    content:"";position:fixed;inset:-20% -20%;background:
+    radial-gradient(800px 400px at 10% 20%, rgba(124,58,237,0.08), transparent 15%),
+    radial-gradient(600px 300px at 90% 80%, rgba(6,182,212,0.06), transparent 10%);z-index:0;filter:blur(30px);animation:moveBG 14s linear infinite;
+  }
+  @keyframes moveBG{0%{transform:translateY(0)}50%{transform:translateY(-30px)}100%{transform:translateY(0)}}
 
-        body {
-            background: linear-gradient(270deg, #00c6ff, #0072ff);
-            background-size: 400% 400%;
-            animation: gradientBG 10s ease infinite;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+  .wrap{position:relative;z-index:1;max-width:980px;margin:28px auto;padding:22px}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .brand{display:flex;gap:12px;align-items:center}
+  .logo{width:56px;height:56px;border-radius:12px;background:var(--accent-grad);box-shadow:0 8px 30px rgba(0,0,0,0.6),0 0 28px rgba(255,79,177,0.06), inset 0 1px 0 rgba(255,255,255,0.06)}
+  h1{font-size:20px;margin:0;font-weight:800;letter-spacing:0.2px}
+  .meta{color:var(--muted);font-size:13px}
 
-        @keyframes gradientBG {
-            0% {background-position: 0% 50%;}
-            50% {background-position: 100% 50%;}
-            100% {background-position: 0% 50%;}
-        }
+  .grid{display:grid;grid-template-columns:1fr 360px;gap:18px;margin-top:18px}
+  @media(max-width:900px){.grid{grid-template-columns:1fr}}
 
-        .login-box {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-            text-align: center;
-            max-width: 300px;
-            width: 100%;
-        }
+  .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:14px;padding:16px;border:1px solid rgba(255,255,255,0.04);box-shadow:0 12px 40px rgba(2,6,23,0.6)}
+  .section-title{font-weight:700;margin:0 0 8px}
+  .muted{color:var(--muted);font-size:13px}
 
-        h1 {
-            margin-bottom: 25px;
-            color: #0072ff;
-        }
+  /* Toggle (neon) */
+  .row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px;border-radius:12px;margin-bottom:10px;background:transparent}
+  .toggle{
+    --w:64px; --h:34px; --p:4px;
+    position:relative;width:var(--w);height:var(--h);border-radius:999px;background:#0e1722;border:1px solid rgba(255,255,255,0.04);cursor:pointer;display:inline-flex;align-items:center;padding:var(--p);
+    transition:all .25s cubic-bezier(.2,.9,.2,1);box-shadow:0 6px 20px rgba(3,7,18,0.6);
+  }
+  .toggle .knob{width:calc(var(--h) - var(--p)*2);height:calc(var(--h) - var(--p)*2);border-radius:50%;background:#e8eef6;box-shadow:0 6px 16px rgba(2,6,23,0.6) inset,0 8px 22px rgba(0,0,0,0.5);transition:transform .25s cubic-bezier(.2,.9,.2,1)}
+  .toggle.off{filter:grayscale(.05);opacity:.9}
+  .toggle.on{background:linear-gradient(90deg, rgba(0,255,225,0.12), rgba(255,79,177,0.14));box-shadow:0 10px 30px rgba(0,255,225,0.06), 0 0 22px rgba(255,79,177,0.03);border:1px solid rgba(255,255,255,0.06)}
+  .toggle.on .knob{transform:translateX(30px);box-shadow:0 0 18px rgba(0,255,225,0.25)}
+  .toggle.on[data-glow="cyan"]{box-shadow:0 8px 36px rgba(0,255,225,0.12), 0 0 34px rgba(0,255,225,0.12)}
+  .toggle.on[data-glow="pink"]{box-shadow:0 8px 36px rgba(255,79,177,0.12), 0 0 34px rgba(255,79,177,0.12)}
+  .label{font-weight:700}
 
-        input[type="text"], input[type="password"] {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 1em;
-        }
+  /* sliders */
+  .range-wrap{padding:12px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.012), transparent);border:1px solid rgba(255,255,255,0.03);margin-bottom:12px}
+  input[type=range]{width:100%;appearance:none;background:transparent;height:18px}
+  input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:999px;background:linear-gradient(90deg,#3b82f6 0%, #06b6d4 50%, #34d399 100%)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 6px 18px rgba(3,7,18,0.6)}
+  .small{font-size:13px;color:var(--muted)}
 
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #0072ff;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1em;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
+  /* aim radio */
+  .radio-row{display:flex;gap:8px;margin-top:8px}
+  .pill{padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,0.04);cursor:pointer;background:transparent}
+  .pill.active{background:var(--accent-grad);color:#04101a;font-weight:700;box-shadow:0 12px 40px rgba(124,58,237,0.08)}
 
-        button:hover {
-            background-color: #005fd1;
-        }
+  /* buttons */
+  .btn{display:inline-flex;align-items:center;gap:10px;padding:12px 18px;border-radius:12px;border:0;cursor:pointer;font-weight:800}
+  .btn.primary{background:linear-gradient(90deg,#ff4fb1,#00ffe1);color:#04101a;box-shadow:0 10px 30px rgba(0,0,0,0.45);transform:translateZ(0);transition:transform .18s}
+  .btn.primary:active{transform:scale(.98)}
+  .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--text)}
+  .btn:focus{outline:none}
 
-        .contact {
-            margin-top: 20px;
-            color: #333;
-            font-size: 0.9em;
-        }
-    </style>
+  /* toast */
+  .toast-wrap{position:fixed;left:50%;transform:translateX(-50%);bottom:24px;z-index:9999;pointer-events:none}
+  .toast{
+    min-width:180px;padding:12px 16px;border-radius:12px;background:linear-gradient(90deg,#071226cc,#0b1624cc);color:var(--text);box-shadow:0 12px 40px rgba(2,6,23,0.6);display:flex;gap:12px;align-items:center;opacity:0;transform:translateY(18px) scale(.98);transition:all .35s cubic-bezier(.2,.9,.2,1);pointer-events:auto
+  }
+  .toast.show{opacity:1;transform:translateY(0) scale(1)}
+  .toast .dot{width:12px;height:12px;border-radius:50%;box-shadow:0 8px 30px rgba(0,0,0,0.5);background:var(--neon-cyan)}
+  .toast.success .dot{background:var(--neon-cyan)}
+  .toast.warn .dot{background:#ffb86b}
+
+  /* footer small */
+  .footer{margin-top:16px;color:var(--muted);font-size:13px;text-align:center}
+</style>
 </head>
 <body>
-    <div class="login-box">
-        <h1>Giabinh</h1>
-        <form onsubmit="return checkLogin(event)">
-            <input type="text" id="username" placeholder="Tên đăng nhập">
-            <input type="password" id="password" placeholder="Mật khẩu">
-            <button type="submit">Đăng nhập</button>
-        </form>
-        <div class="contact">Liên hệ: 0947691156</div>
-    </div>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>Sensi VIP • Free Fire</h1>
+          <div class="meta">Giao diện VIP · Neon Glow · Bật/tắt & Thông báo</div>
+        </div>
+      </div>
+      <div>
+        <button class="btn ghost" id="previewBtn">Xem trước</button>
+        <button class="btn primary" id="exportBtn">Xuất .mobileconfig</button>
+      </div>
+    </header>
 
-    <script>
-        function checkLogin(event) {
-            event.preventDefault();
-            const u = document.getElementById('username').value;
-            const p = document.getElementById('password').value;
-            if (u === "Giabinh" && p === "Giabinh") {
-                alert("Đăng nhập thành công!");
-            } else {
-                alert("Sai tên đăng nhập hoặc mật khẩu!");
-            }
-        }
-    </script>
+    <main class="grid" aria-live="polite">
+      <!-- left column -->
+      <section class="card" aria-label="Cài đặt chính">
+        <div class="section-title">1) Unlock trợ năng <span class="small"> (iOS15–18.6)</span></div>
+        <p class="muted">Kích hoạt để mở rộng các tùy chỉnh cảm ứng.</p>
+
+        <div style="margin-top:12px">
+          <div class="row">
+            <div><div class="label">Sensi Touch</div><div class="small">Tối ưu kéo tâm</div></div>
+            <div class="toggle off" data-glow="cyan" id="tgSensi" role="switch" aria-checked="false" tabindex="0">
+              <div class="knob"></div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div><div class="label">Hỗ trợ nhẹ tâm</div><div class="small">Giúp bám đầu tốt hơn</div></div>
+            <div class="toggle off" data-glow="pink" id="tgSupport" role="switch" aria-checked="false" tabindex="0">
+              <div class="knob"></div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div><div class="label">Mode Sensi</div><div class="small">Chọn cấu hình kéo</div></div>
+            <div class="toggle off" data-glow="cyan" id="tgMode" role="switch" aria-checked="false" tabindex="0">
+              <div class="knob"></div>
+            </div>
+          </div>
+        </div>
+
+        <hr style="border:none;height:1px;background:rgba(255,255,255,0.03);margin:14px 0;border-radius:4px">
+
+        <div class="section-title">2) Sensi Touch — Tùy chỉnh</div>
+        <div class="range-wrap">
+          <div class="small">Tốc độ con trỏ <strong id="cursorVal">50</strong></div>
+          <input id="cursorRange" type="range" min="0" max="100" value="50" />
+        </div>
+        <div class="range-wrap">
+          <div class="small">Độ nhạy xung quanh <strong id="aroundVal">40</strong></div>
+          <input id="aroundRange" type="range" min="0" max="100" value="40" />
+        </div>
+        <div class="range-wrap">
+          <div class="small">Độ nhạy drag <strong id="dragVal">60</strong></div>
+          <input id="dragRange" type="range" min="0" max="100" value="60" />
+        </div>
+
+        <div style="margin-top:10px">
+          <div class="section-title">3) Mode Sensi & Aim</div>
+          <div class="muted">Chọn Aim mode</div>
+          <div class="radio-row" style="margin-top:8px">
+            <div class="pill active" data-val="normal">Aim Assist</div>
+            <div class="pill" data-val="precision">Precision</div>
+          </div>
+
+          <div style="margin-top:12px" class="row">
+            <div><div class="label">Drag thủ công</div><div class="small">Sử dụng kéo bằng tay</div></div>
+            <div class="toggle off" data-glow="pink" id="tgManual" role="switch" aria-checked="false" tabindex="0"><div class="knob"></div></div>
+          </div>
+        </div>
+
+        <div class="footer">Phiên bản VIP: <strong>v1.0</strong> · Thiết kế bởi <strong>Lê Gia Bình</strong></div>
+      </section>
+
+      <!-- right column -->
+      <aside class="card" aria-label="Tóm tắt & Hành động">
+        <div class="section-title">Tóm tắt cấu hình</div>
+        <div class="muted" style="margin-bottom:10px">Kiểm tra nhanh trước khi áp dụng / xuất.</div>
+        <div style="display:grid;gap:8px">
+          <div class="small">Sensi Touch: <strong id="sumSensi">Tắt</strong></div>
+          <div class="small">Hỗ trợ tâm: <strong id="sumSupport">Tắt</strong></div>
+          <div class="small">Mode Sensi: <strong id="sumMode">Tắt</strong></div>
+          <div class="small">Aim Mode: <strong id="sumAim">Aim Assist</strong></div>
+          <div class="small">Drag thủ công: <strong id="sumManual">Tắt</strong></div>
+          <div class="small">Cursor / Around / Drag: <strong id="sumVals">50 / 40 / 60</strong></div>
+        </div>
+
+        <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn primary" id="openFF">Mở Free Fire</button>
+          <button class="btn primary" id="openFFMax" style="background:linear-gradient(90deg,#00ffe1,#ff4fb1)">Mở FF Max</button>
+          <button class="btn ghost" id="applyBtn" style="padding:10px 14px;font-weight:700">Áp dụng</button>
+          <button class="btn ghost" id="resetBtn" style="padding:10px 14px;font-weight:700">Đặt lại</button>
+        </div>
+
+        <div style="margin-top:12px" class="small">Chú ý: Nút &gt; sẽ cố gắng mở app trên điện thoại. Nếu không có, sẽ chuyển đến trang hỗ trợ.</div>
+      </aside>
+    </main>
+  </div>
+
+  <!-- toast -->
+  <div class="toast-wrap" aria-live="assertive">
+    <div id="toastEl" class="toast">
+      <div class="dot"></div>
+      <div id="toastText" style="flex:1">Thông báo</div>
+      <div id="toastAction" style="opacity:.9;font-weight:700"></div>
+    </div>
+  </div>
+
+<script>
+  // Utils: toast
+  const toastEl = document.getElementById('toastEl');
+  const toastText = document.getElementById('toastText');
+  let toastTimer = null;
+  function showToast(message, type='success', ttl=2000){
+    toastText.textContent = message;
+    toastEl.classList.remove('success','warn');
+    toastEl.classList.add(type);
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=> toastEl.classList.remove('show'), ttl);
+  }
+
+  // toggles elements
+  function makeToggle(id, opts = {}){
+    const el = document.getElementById(id);
+    el.tabIndex = 0;
+    el.addEventListener('click', ()=> toggle(el, opts));
+    el.addEventListener('keydown', (e)=>{ if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(el, opts); }});
+    return el;
+  }
+  function toggle(el, opts){
+    const on = !el.classList.contains('on');
+    el.classList.toggle('on', on);
+    el.classList.toggle('off', !on);
+    el.setAttribute('aria-checked', on ? 'true' : 'false');
+    // glow pulse animation briefly
+    if(on){
+      el.animate([{ boxShadow: '0 6px 20px rgba(0,0,0,0.6)', transform: 'scale(1)' },
+                  { boxShadow: '0 20px 60px rgba(0,255,225,0.12)', transform:'scale(1.02)'},
+                  { boxShadow: '0 6px 20px rgba(0,0,0,0.6)', transform:'scale(1)'}], {duration:420});
+    }
+    // toast
+    const label = el.previousElementSibling ? el.previousElementSibling.querySelector('.label') : null;
+    const name = label ? label.textContent.trim() : (opts.name || 'Tùy chọn');
+    showToast(`${name}: ${on ? 'Bật' : 'Tắt'}`);
+    updateSummary();
+  }
+
+  // prepare toggles
+  const tgSensi = makeToggle('tgSensi'); const tgSupport = makeToggle('tgSupport'); const tgMode = makeToggle('tgMode'); const tgManual = makeToggle('tgManual');
+
+  // sliders
+  const cursorRange = document.getElementById('cursorRange');
+  const aroundRange = document.getElementById('aroundRange');
+  const dragRange = document.getElementById('dragRange');
+  const cursorVal = document.getElementById('cursorVal');
+  const aroundVal = document.getElementById('aroundVal');
+  const dragVal = document.getElementById('dragVal');
+
+  [cursorRange, aroundRange, dragRange].forEach(inp=>{
+    inp.addEventListener('input', ()=>{
+      cursorVal.textContent = cursorRange.value;
+      aroundVal.textContent = aroundRange.value;
+      dragVal.textContent = dragRange.value;
+      updateSummary();
+    });
+  });
+
+  // pills (aim mode)
+  document.querySelectorAll('.pill').forEach(p=>{
+    p.addEventListener('click', ()=>{
+      document.querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));
+      p.classList.add('active');
+      showToast('Aim Mode: ' + p.textContent.trim());
+      updateSummary();
+    });
+  });
+
+  // summary updates
+  function updateSummary(){
+    document.getElementById('sumSensi').textContent = tgSensi.classList.contains('on') ? 'Bật' : 'Tắt';
+    document.getElementById('sumSupport').textContent = tgSupport.classList.contains('on') ? 'Bật' : 'Tắt';
+    document.getElementById('sumMode').textContent = tgMode.classList.contains('on') ? 'Bật' : 'Tắt';
+    document.getElementById('sumManual').textContent = tgManual.classList.contains('on') ? 'Bật' : 'Tắt';
+    const aim = document.querySelector('.pill.active')?.textContent.trim() || 'Aim Assist';
+    document.getElementById('sumAim').textContent = aim;
+    document.getElementById('sumVals').textContent = `${cursorRange.value} / ${aroundRange.value} / ${dragRange.value}`;
+  }
+  updateSummary();
+
+  // apply / reset
+  document.getElementById('applyBtn').addEventListener('click', ()=>{
+    // simulate apply + preview
+    const cfg = {
+      sensi: tgSensi.classList.contains('on'),
+      support: tgSupport.classList.contains('on'),
+      mode: tgMode.classList.contains('on'),
+      manualDrag: tgManual.classList.contains('on'),
+      aim: document.querySelector('.pill.active')?.dataset.val || 'normal',
+      cursor:+cursorRange.value, around:+aroundRange.value, drag:+dragRange.value
+    };
+    // copy to clipboard as JSON (mobile browsers ask permission)
+    const text = JSON.stringify(cfg,null,2);
+    if(navigator.clipboard && window.isSecureContext){
+      navigator.clipboard.writeText(text).then(()=> showToast('Cấu hình đã copy vào clipboard ✅'), ()=> showToast('Không thể copy — mở menu chia sẻ', 'warn'));
+    } else {
+      showToast('Chuẩn bị tải cấu hình...', 'success');
+      // fallback: download file
+      const a = document.createElement('a'); a.href = 'data:application/json;charset=utf-8,'+encodeURIComponent(text); a.download = 'sensi-vip-config.json'; document.body.appendChild(a); a.click(); a.remove();
+    }
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', ()=>{
+    // reset defaults
+    if(tgSensi.classList.contains('on')) toggle(tgSensi);
+    if(tgSupport.classList.contains('on')) toggle(tgSupport);
+    if(tgMode.classList.contains('on')) toggle(tgMode);
+    if(tgManual.classList.contains('on')) toggle(tgManual);
+    document.querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));
+    document.querySelector('.pill[data-val="normal"]').classList.add('active');
+    cursorRange.value = 50; aroundRange.value = 40; dragRange.value = 60;
+    cursorVal.textContent = 50; aroundVal.textContent = 40; dragVal.textContent = 60;
+    updateSummary(); showToast('Đã đặt lại mặc định');
+  });
+
+  // open app logic (iOS + Android) with fallback
+  function openApp(schemeIos, intentAndroid, fallbackUrl, name){
+    showToast(`Đang mở ${name}...`);
+    const ua = navigator.userAgent || navigator.vendor || window.opera;
+    const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+    const isAndroid = /Android/.test(ua);
+
+    const now = Date.now();
+    if(isIOS){
+      // try iOS scheme
+      window.location = schemeIos;
+      // fallback after short delay
+      setTimeout(()=> {
+        // if still here, redirect to store / support
+        if(Date.now() - now < 2000) window.location = fallbackUrl;
+      }, 1200);
+    } else if(isAndroid){
+      // try intent first (most reliable on Android)
+      try {
+        window.location = intentAndroid;
+      } catch(e){
+        window.location = fallbackUrl;
+      }
+      // also fallback after delay
+      setTimeout(()=> {
+        if(Date.now() - now < 2000) window.location = fallbackUrl;
+      }, 1200);
+    } else {
+      // desktop: just open fallback page
+      window.open(fallbackUrl,'_blank');
+    }
+  }
+
+  // button handlers
+  document.getElementById('openFF').addEventListener('click', ()=>{
+    // iOS scheme, Android intent, fallback store/support
+    openApp('freefire://', 'intent://com.dts.freefireth#Intent;package=com.dts.freefireth;scheme=freefire;end', 'https://www.freefiremobile.com', 'Free Fire');
+    // tiny press animation
+    pressAnim(document.getElementById('openFF'));
+  });
+  document.getElementById('openFFMax').addEventListener('click', ()=>{
+    openApp('freefiremax://', 'intent://com.dts.freefiremax#Intent;package=com.dts.freefiremax;scheme=freefiremax;end', 'https://www.freefiremax.com', 'Free Fire MAX');
+    pressAnim(document.getElementById('openFFMax'));
+  });
+
+  // button press animation
+  function pressAnim(btn){
+    btn.animate([{transform:'scale(1)'},{transform:'scale(0.96)'},{transform:'scale(1)'}], {duration:260, easing:'ease-out'});
+  }
+
+  // preview/export btns (demo)
+  document.getElementById('previewBtn').addEventListener('click', ()=> {
+    showToast('Chế độ xem trước mở', 'success'); 
+    // open simple modal-like preview
+    const win = window.open('', '_blank');
+    const html = `<html><head><title>Preview</title><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="background:#071225;color:#fff;font-family:Inter;padding:20px"><h2>Preview cấu hình</h2><pre>${JSON.stringify({
+      sensi: tgSensi.classList.contains('on'),
+      support: tgSupport.classList.contains('on'),
+      mode: tgMode.classList.contains('on'),
+      manual: tgManual.classList.contains('on'),
+      aim: document.querySelector('.pill.active')?.dataset.val || 'normal',
+      cursor:+cursorRange.value,around:+aroundRange.value,drag:+dragRange.value
+    }, null, 2)}</pre></body></html>`;
+    win.document.write(html); win.document.close();
+  });
+
+  document.getElementById('exportBtn').addEventListener('click', ()=>{
+    // build a minimal mobileconfig web clip (demo). For real signed profile you need .p12 on server side.
+    const label = 'Sensi VIP';
+    const url = location.href; // points to current page or support page
+    const mc = `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0">\n<dict>\n  <key>PayloadContent</key>\n  <array>\n    <dict>\n      <key>FullScreen</key><true/>\n      <key>IsRemovable</key><true/>\n      <key>Label</key><string>${label}</string>\n      <key>PayloadDescription</key><string>Web Clip Sensi VIP</string>\n      <key>PayloadDisplayName</key><string>${label}</string>\n      <key>PayloadIdentifier</key><string>com.giabinh.sensi.webclip</string>\n      <key>PayloadType</key><string>com.apple.webClip.managed</string>\n      <key>PayloadUUID</key><string>$(uuidgen)</string>\n      <key>PayloadVersion</key><integer>1</integer>\n      <key>Precomposed</key><true/>\n      <key>URL</key><string>${url}</string>\n    </dict>\n  </array>\n  <key>PayloadDisplayName</key>\n  <string>Sensi VIP WebClip</string>\n  <key>PayloadIdentifier</key>\n  <string>com.giabinh.sensi.profile</string>\n  <key>PayloadRemovalDisallowed</key>\n  <false/>\n  <key>PayloadType</key>\n  <string>Configuration</string>\n  <key>PayloadUUID</key>\n  <string>$(uuidgen2)</string>\n  <key>PayloadVersion</key>\n  <integer>1</integer>\n</dict>\n</plist>`;
+    const blob = new Blob([mc], {type:'application/x-apple-aspen-config'});
+    const urlBlob = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = urlBlob; a.download = 'SensiVIP.mobileconfig'; a.click();
+    setTimeout(()=>URL.revokeObjectURL(urlBlob), 30000);
+    showToast('Đã tạo file .mobileconfig (demo)');
+  });
+
+  // initial tiny welcome
+  setTimeout(()=> showToast('Chào! Chạm vào công tắc để bật tính năng.', 'success', 2600), 700);
+</script>
 </body>
 </html>
